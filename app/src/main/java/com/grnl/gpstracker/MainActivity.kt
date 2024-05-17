@@ -1,13 +1,7 @@
 package com.grnl.gpstracker
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.replace
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.grnl.gpstracker.databinding.ActivityMainBinding
 import com.grnl.gpstracker.fragments.HomeFragment
 import com.grnl.gpstracker.fragments.SettingsFragment
@@ -31,12 +25,14 @@ class MainActivity : AppCompatActivity() {
         binding.btmNav.setOnItemSelectedListener {
             when(it.itemId) {
                 R.id.home_id -> {
-                    fragmentReplace(HomeFragment())
+                    fragmentReplace(HomeFragment.newInstance())
                 }
                 R.id.route_id -> {
-                    fragmentReplace(ViewTrackFragment())
+                    fragmentReplace(ViewTrackFragment.newInstance())
                 }
-                R.id.id_settings -> fragmentReplace(SettingsFragment())
+                R.id.id_settings ->{
+                    fragmentReplace(SettingsFragment())
+                }
             }
             true
         }
@@ -44,6 +40,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun fragmentReplace(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
+            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
             .replace(R.id.fragment_container, fragment)
             .commit()
     }

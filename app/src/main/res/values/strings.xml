@@ -47,4 +47,7 @@
     <string name="settings">Settings</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="update_time">Update time</string>
+    <string name="update_time_hint">Location update time for optimize battery</string>
+
 </resources>
