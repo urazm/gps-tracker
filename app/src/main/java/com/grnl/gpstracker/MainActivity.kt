@@ -1,5 +1,6 @@
 package com.grnl.gpstracker
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.grnl.gpstracker.databinding.ActivityMainBinding
@@ -39,10 +40,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun fragmentReplace(fragment: Fragment) {
+        val fragmentManager = supportFragmentManager
+        val currentFragment = fragmentManager.findFragmentById(R.id.fragment_container)
+        if(currentFragment != null && currentFragment::class == fragment::class) {
+            return
+        }
         supportFragmentManager.beginTransaction()
-            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
             .replace(R.id.fragment_container, fragment)
             .commit()
+        Log.d("MYAPP", fragment.toString())
     }
 
 }
