@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="Preference category">
+    <PreferenceCategory android:title="Location">
 
         <ListPreference
             android:defaultValue="3000"
@@ -12,5 +12,15 @@
             android:title="@string/update_time"
             app:icon="@drawable/ic_time"
             app:summary="@string/update_time_hint" />
+
+        <ListPreference
+            android:defaultValue="#1167B9"
+            android:entries="@array/color_names"
+            android:entryValues="@array/color_values"
+            android:key="color_key"
+            android:title="@string/location_color"
+            app:icon="@drawable/ic_circle"
+            app:summary="@string/location_color_hint" />
+
     </PreferenceCategory>
 </PreferenceScreen>
