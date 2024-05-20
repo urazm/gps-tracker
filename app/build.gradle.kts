@@ -52,4 +52,9 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
     implementation("androidx.preference:preference-ktx:1.2.1")
 
+    //OMS
+    implementation("org.osmdroid:osmdroid-android:6.1.10")
+    implementation("com.github.MKergall:osmbonuspack:6.7.0")
+
+
 }
