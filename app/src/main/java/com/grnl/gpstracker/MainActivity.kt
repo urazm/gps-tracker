@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
             .commit()
-        Log.d("MYAPP", fragment.toString())
+//        Log.d("MYAPP", fragment.toString())
     }
 
 }
