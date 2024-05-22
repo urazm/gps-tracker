@@ -2,10 +2,12 @@ package com.grnl.gpstracker.fragments
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -125,8 +127,14 @@ class HomeFragment : Fragment() {
         val lManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val isEnabled = lManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
         if(!isEnabled){
-            DialogManager.showLocEnableDialog(activity as AppCompatActivity)
-            Toast.makeText(context, "GPS выключен", Toast.LENGTH_LONG).show()
+            DialogManager.showLocEnableDialog(
+                activity as AppCompatActivity,
+                object : DialogManager.Listener {
+                    override fun onClick() {
+                        startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                    }
+                }
+            )
         } else {
             Toast.makeText(context, "Location enabled", Toast.LENGTH_LONG).show()
         }
