@@ -3,6 +3,7 @@ package com.grnl.gpstracker.fragments
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -13,8 +14,10 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.grnl.gpstracker.helpers.DialogManager
 import com.grnl.gpstracker.databinding.FragmentMainBinding
 import org.osmdroid.config.Configuration
 import org.osmdroid.library.BuildConfig
@@ -87,6 +90,8 @@ class HomeFragment : Fragment() {
         } else {
             checkPermissionBefore10()
         }
+        checkLocationEnabled()
+
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -109,11 +114,24 @@ class HomeFragment : Fragment() {
     private fun checkPermissionBefore10() {
         if (checkPermissions(Manifest.permission.ACCESS_FINE_LOCATION)) {
             initOsm()
+            checkLocationEnabled()
         } else {
             Log.d("HomeFragment", "Запрос разрешений до Android 10")
             pLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
         }
     }
+
+    private fun checkLocationEnabled(){
+        val lManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val isEnabled = lManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        if(!isEnabled){
+            DialogManager.showLocEnableDialog(activity as AppCompatActivity)
+            Toast.makeText(context, "GPS выключен", Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(context, "Location enabled", Toast.LENGTH_LONG).show()
+        }
+    }
+
     companion object {
         @JvmStatic
         fun newInstance() = HomeFragment()

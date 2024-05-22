@@ -1,4 +1,6 @@
 package com.grnl.gpstracker
+import android.content.Context
+import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -50,5 +52,6 @@ class MainActivity : AppCompatActivity() {
             .commit()
 //        Log.d("MYAPP", fragment.toString())
     }
+
 
 }

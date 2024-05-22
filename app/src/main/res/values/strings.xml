@@ -51,5 +51,7 @@
     <string name="update_time_hint">Location update time for optimize battery</string>
     <string name="location_color">Track Color</string>
     <string name="location_color_hint">Choose track color</string>
+    <string name="location_disabled">Location Disabled</string>
+    <string name="location_dialog_message">Do you want enable GPS?</string>
 
 </resources>
