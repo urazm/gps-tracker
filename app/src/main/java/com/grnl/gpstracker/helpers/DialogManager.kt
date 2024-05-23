@@ -2,10 +2,6 @@ package com.grnl.gpstracker.helpers
 
 import android.app.AlertDialog
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.view.LayoutInflater
-import android.widget.Toast
 import com.grnl.gpstracker.R
 
 object DialogManager {

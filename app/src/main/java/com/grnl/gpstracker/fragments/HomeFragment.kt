@@ -26,6 +26,7 @@ import org.osmdroid.library.BuildConfig
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 import com.grnl.gpstracker.helpers.checkPermissions
+import com.grnl.gpstracker.location.LocationService
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentMainBinding
@@ -42,6 +43,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         registerPermissions()
+        activity?.startService(Intent(activity, LocationService::class.java))
     }
     override fun onResume() {
         super.onResume()
