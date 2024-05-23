@@ -3,7 +3,7 @@ package com.grnl.gpstracker.fragments
 import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
+ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
@@ -30,25 +30,25 @@ import com.grnl.gpstracker.helpers.checkPermissions
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentMainBinding
     private lateinit var pLauncher: ActivityResultLauncher<Array<String>>
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        registerPermissions()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMainBinding.inflate(inflater, container, false)
+        settingsOsm()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        settingsOsm()
+        registerPermissions()
+    }
+    override fun onResume() {
+        super.onResume()
         checkLocPermission()
     }
+
+
 
     private fun settingsOsm() {
         Configuration.getInstance().load(
