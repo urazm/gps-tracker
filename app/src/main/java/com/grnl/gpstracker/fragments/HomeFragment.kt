@@ -3,7 +3,6 @@ package com.grnl.gpstracker.fragments
 import android.Manifest
 import android.content.Context
 import android.content.Intent
- import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
@@ -17,16 +16,15 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.grnl.gpstracker.helpers.DialogManager
 import com.grnl.gpstracker.databinding.FragmentMainBinding
+import com.grnl.gpstracker.helpers.DialogManager
+import com.grnl.gpstracker.helpers.checkPermissions
+import com.grnl.gpstracker.location.LocationService
 import org.osmdroid.config.Configuration
 import org.osmdroid.library.BuildConfig
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
-import com.grnl.gpstracker.helpers.checkPermissions
-import com.grnl.gpstracker.location.LocationService
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentMainBinding
@@ -43,7 +41,16 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         registerPermissions()
-        activity?.startService(Intent(activity, LocationService::class.java))
+        val intent = Intent(activity, LocationService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Log.d("LocationService", "startForeground")
+            activity?.startForegroundService(intent)
+        }
+        else {
+            Log.d("LocationService", "startService")
+            activity?.startService(intent)
+        }
+
     }
     override fun onResume() {
         super.onResume()
@@ -61,7 +68,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun initOsm() = with(binding) {
-        map.controller.setZoom(17.0)
+        map.controller.setZoom(18.0)
         val mLocProvider = GpsMyLocationProvider(requireActivity())
         val mLocOverlay = MyLocationNewOverlay(mLocProvider, map)
         mLocOverlay.enableMyLocation()
@@ -76,7 +83,9 @@ class HomeFragment : Fragment() {
         pLauncher = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissions ->
-            if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true) {
+            if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true
+                && permissions[Manifest.permission.FOREGROUND_SERVICE] == true
+                && permissions[Manifest.permission.FOREGROUND_SERVICE_LOCATION] == true) {
                 initOsm()
             } else {
                 Toast.makeText(
