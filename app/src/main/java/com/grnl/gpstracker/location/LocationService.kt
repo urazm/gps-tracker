@@ -20,6 +20,7 @@ class LocationService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d("LocationService", "onStartCommand called")
         startNotification()
+        isRunning = true
         return START_STICKY
     }
 
@@ -31,15 +32,15 @@ class LocationService : Service() {
     override fun onDestroy() {
         Log.d("LocationService", "onDestroy called")
         super.onDestroy()
+        isRunning = false
     }
 
     private fun startNotification() {
-        val channelId = "location_service_channel"
         val channelName = "Location Service"
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
-                channelId,
+                CHANNEL_ID,
                 channelName,
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
@@ -57,12 +58,20 @@ class LocationService : Service() {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        val notification = NotificationCompat.Builder(this, channelId)
+        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle("Tracker Running!")
+            .setContentTitle("Location Service Enabled")
             .setContentIntent(pendingIntent)
             .build()
 
         startForeground(1, notification)
     }
+
+
+    companion object{
+        const val CHANNEL_ID = "channel_1"
+        var isRunning = false
+        var startTime = 0L
+    }
 }
+
