@@ -60,14 +60,14 @@ class HomeFragment : Fragment() {
     private fun setOnClicks() = with(binding){
         val listener = onClicks()
         fStartStop.setOnClickListener(listener)
-        fCenter.setOnClickListener(listener)
+//        fCenter.setOnClickListener(listener)
     }
 
     private fun onClicks(): View.OnClickListener{
         return View.OnClickListener {
             when(it.id){
                 R.id.fStartStop -> startStopService()
-                R.id.fCenter -> centerLocation()
+//                R.id.fCenter -> centerLocation()
             }
         }
     }
