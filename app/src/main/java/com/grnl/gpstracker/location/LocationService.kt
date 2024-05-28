@@ -89,12 +89,10 @@ class LocationService : Service() {
         override fun onLocationResult(lResult: LocationResult) {
             super.onLocationResult(lResult)
             val currLocation = lResult.lastLocation
-            if (currLocation != null) {
-                if (lastLocation != null) {
-                    val distanceTo = lastLocation?.distanceTo(currLocation) ?: 0f
-                    if (distanceTo > 1) {
-                        distance += distanceTo
-                    }
+            if (currLocation != null && lastLocation != null) {
+                val distanceTo = lastLocation?.distanceTo(currLocation) ?: 0f
+                if (distanceTo > 1) {
+                    distance += distanceTo
                 }
                 lastLocation = currLocation
                 Log.d("distance", "distance: $distance")

@@ -21,6 +21,7 @@ import androidx.lifecycle.MutableLiveData
 import com.grnl.gpstracker.R
 import com.grnl.gpstracker.databinding.FragmentMainBinding
 import com.grnl.gpstracker.helpers.DialogManager
+import com.grnl.gpstracker.helpers.TimeUtils
 import com.grnl.gpstracker.helpers.checkPermissions
 import com.grnl.gpstracker.location.LocationService
 import org.osmdroid.config.Configuration
@@ -28,9 +29,6 @@ import org.osmdroid.library.BuildConfig
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 import java.util.Timer
-import com.grnl.gpstracker.helpers.TimeUtils
-import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.MapView
 import java.util.TimerTask
 
 class HomeFragment : Fragment() {
@@ -72,21 +70,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    fun centerLocation(map: MapView, latitude: Double, longitude: Double, zoomLevel: Double) {
-        // Создаем GeoPoint для новой локации
-        val newLocation = GeoPoint(latitude, longitude)
-
-        // Устанавливаем центр карты на новую локацию
-        map.controller.setCenter(newLocation)
-
-        // Устанавливаем уровень приближения
-        map.controller.setZoom(zoomLevel)
-
-        // (Опционально) добавляем маркер на новую локацию
-
-        // Обновляем отображение карты
-        map.invalidate()
-    }
     private fun updateTime(){
         timeData.observe(viewLifecycleOwner){
             binding.tvTime.text = it
