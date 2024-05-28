@@ -3,6 +3,7 @@ package com.grnl.gpstracker.fragments
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.location.Location
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
@@ -26,6 +27,7 @@ import com.grnl.gpstracker.helpers.checkPermissions
 import com.grnl.gpstracker.location.LocationService
 import org.osmdroid.config.Configuration
 import org.osmdroid.library.BuildConfig
+import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 import java.util.Timer
@@ -38,6 +40,7 @@ class HomeFragment : Fragment() {
     private val timeData = MutableLiveData<String>()
     private lateinit var binding: FragmentMainBinding
     private lateinit var pLauncher: ActivityResultLauncher<Array<String>>
+    private lateinit var locationOverlay: MyLocationNewOverlay
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -58,15 +61,26 @@ class HomeFragment : Fragment() {
     private fun setOnClicks() = with(binding){
         val listener = onClicks()
         fStartStop.setOnClickListener(listener)
-//        fCenter.setOnClickListener(listener)
+        fCenter.setOnClickListener(listener)
     }
 
     private fun onClicks(): View.OnClickListener{
         return View.OnClickListener {
             when(it.id){
                 R.id.fStartStop -> startStopService()
-//                R.id.fCenter -> centerLocation()
+                R.id.fCenter -> centerLocation()
             }
+        }
+    }
+
+    private fun centerLocation() = with(binding){
+        val currentLocation: GeoPoint? = locationOverlay.myLocation
+        if (currentLocation != null) {
+            val geoPoint = GeoPoint(currentLocation.latitude, currentLocation.longitude)
+            map.controller.animateTo(geoPoint)
+            map.controller.setZoom(18.0)
+        } else {
+            Toast.makeText(context, "Не удалось получить текущее местоположение", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -140,12 +154,12 @@ class HomeFragment : Fragment() {
     private fun initOsm() = with(binding) {
         map.controller.setZoom(18.0)
         val mLocProvider = GpsMyLocationProvider(requireActivity())
-        val mLocOverlay = MyLocationNewOverlay(mLocProvider, map)
-        mLocOverlay.enableMyLocation()
-        mLocOverlay.enableFollowLocation()
-        mLocOverlay.runOnFirstFix {
+        locationOverlay = MyLocationNewOverlay(mLocProvider, map)
+        locationOverlay.enableMyLocation()
+        locationOverlay.enableFollowLocation()
+        locationOverlay.runOnFirstFix {
             map.overlays.clear()
-            map.overlays.add(mLocOverlay)
+            map.overlays.add(locationOverlay)
         }
     }
 

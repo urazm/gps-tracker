@@ -7,12 +7,6 @@
         android:orderInCategory="100"
         />
     <item
-        android:title="@string/route"
-        android:icon="@drawable/ic_route"
-        android:id="@+id/route_id"
-        android:orderInCategory="200"
-        />
-    <item
         android:title="@string/settings"
         android:icon="@drawable/ic_settings"
         android:id="@+id/id_settings"

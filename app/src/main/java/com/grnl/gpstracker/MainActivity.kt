@@ -1,14 +1,10 @@
 package com.grnl.gpstracker
-import android.content.Context
-import android.location.LocationManager
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.grnl.gpstracker.databinding.ActivityMainBinding
 import com.grnl.gpstracker.fragments.HomeFragment
 import com.grnl.gpstracker.fragments.SettingsFragment
-import com.grnl.gpstracker.fragments.ViewTrackFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,9 +25,6 @@ class MainActivity : AppCompatActivity() {
             when(it.itemId) {
                 R.id.home_id -> {
                     fragmentReplace(HomeFragment.newInstance())
-                }
-                R.id.route_id -> {
-                    fragmentReplace(ViewTrackFragment.newInstance())
                 }
                 R.id.id_settings ->{
                     fragmentReplace(SettingsFragment())
