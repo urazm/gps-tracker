@@ -22,12 +22,23 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
 import com.grnl.gpstracker.MainActivity
 import com.grnl.gpstracker.R
+import com.grnl.gpstracker.db.AppDatabase
+import com.grnl.gpstracker.db.DistanceEntry
+import com.grnl.gpstracker.db.LocationEntry
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class LocationService : Service() {
     private var distance = 0.0f
     private lateinit var locProvider: FusedLocationProviderClient
     private lateinit var locRequest: LocationRequest
     private var lastLocation: Location? = null
+    private lateinit var database: AppDatabase
+
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
@@ -44,6 +55,7 @@ class LocationService : Service() {
         Log.d("LocationService", "onCreate called")
         super.onCreate()
         initLocation()
+        database = AppDatabase.getDatabase(this)
     }
 
     override fun onDestroy() {
@@ -93,8 +105,10 @@ class LocationService : Service() {
                 val distanceTo = lastLocation?.distanceTo(currLocation) ?: 0f
                 if (distanceTo > 1) {
                     distance += distanceTo
+                    saveDistance(distance)
                 }
                 lastLocation = currLocation
+                saveLocation(currLocation)
                 Log.d("distance", "distance: $distance")
             }
         }
@@ -121,7 +135,21 @@ class LocationService : Service() {
         )
     }
 
+    private fun saveLocation(location: Location) {
+        val timestamp = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault()).format(Date())
+        val locationEntry = LocationEntry(latitude = location.latitude, longitude = location.longitude, timestamp = timestamp)
+        CoroutineScope(Dispatchers.IO).launch {
+            database.locationDao().insertLocation(locationEntry)
+        }
+    }
 
+    private fun saveDistance(distance: Float) {
+        val timestamp = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault()).format(Date())
+        val distanceEntry = DistanceEntry(distance = distance, timestamp = timestamp)
+        CoroutineScope(Dispatchers.IO).launch {
+            database.distanceDao().insertDistance(distanceEntry)
+        }
+    }
     companion object{
         const val CHANNEL_ID = "channel_1"
         var isRunning = false
