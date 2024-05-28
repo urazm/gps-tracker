@@ -37,7 +37,7 @@ class LocationService : Service() {
     private lateinit var locProvider: FusedLocationProviderClient
     private lateinit var locRequest: LocationRequest
     private var lastLocation: Location? = null
-//    private lateinit var database: AppDatabase
+    private lateinit var database: AppDatabase
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -55,7 +55,7 @@ class LocationService : Service() {
         Log.d("LocationService", "onCreate called")
         super.onCreate()
         initLocation()
-//        database = AppDatabase.getDatabase(this)
+        database = AppDatabase.getDatabase(this)
     }
 
     override fun onDestroy() {
@@ -104,8 +104,10 @@ class LocationService : Service() {
             if (currLocation != null && lastLocation != null) {
                 val distanceTo = lastLocation!!.distanceTo(currLocation)
                 distance += distanceTo
+                saveLocation(currLocation)
             }
             lastLocation = currLocation
+            saveDistance(distance)
             Log.d("distance", "distance: $distance")
         }
     }
@@ -131,24 +133,24 @@ class LocationService : Service() {
         )
     }
 
-//    private fun saveLocation(location: Location) {
-//        val timestamp = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault()).format(Date())
-//        val locationEntry = LocationEntry(latitude = location.latitude, longitude = location.longitude, timestamp = timestamp)
-//        CoroutineScope(Dispatchers.IO).launch {
-////            database.locationDao().insertLocation(locationEntry)
-//            Log.d("LocationService", "Location saved: $locationEntry")
-//        }
-//    }
-//
-//    private fun saveDistance(distance: Float) {
-//        val timestamp = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault()).format(Date())
-//        val distanceEntry = DistanceEntry(distance = distance, timestamp = timestamp)
-//        CoroutineScope(Dispatchers.IO).launch {
-////            database.distanceDao().insertDistance(distanceEntry)
-//            Log.d("LocationService", "Distance saved: $distanceEntry")
-//
-//        }
-//    }
+    private fun saveLocation(location: Location) {
+        val timestamp = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault()).format(Date())
+        val locationEntry = LocationEntry(latitude = location.latitude, longitude = location.longitude, timestamp = timestamp)
+        CoroutineScope(Dispatchers.IO).launch {
+            database.locationDao().insertLocation(locationEntry)
+            Log.d("LocationService", "Location saved: $locationEntry")
+        }
+    }
+
+    private fun saveDistance(distance: Float) {
+        val timestamp = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault()).format(Date())
+        val distanceEntry = DistanceEntry(distance = distance, timestamp = timestamp)
+        CoroutineScope(Dispatchers.IO).launch {
+            database.distanceDao().insertDistance(distanceEntry)
+            Log.d("LocationService", "Distance saved: $distanceEntry")
+
+        }
+    }
     companion object{
         const val CHANNEL_ID = "channel_1"
         var isRunning = false
